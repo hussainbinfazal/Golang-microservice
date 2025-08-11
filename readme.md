@@ -22,7 +22,7 @@
 1. **Clone the repository:**
 ```bash
 git clone https://github.com/hussainbinfazal/Golang-microservice.git
-cd Golang-microservice
+cd Golang-microservice/CRUD-GO
 ```
 
 2. **Install dependencies:**
@@ -32,17 +32,35 @@ go mod tidy
 
 3. **Run the application:**
 ```bash
-go run main.go
+go run microservice-golang/main.go
+```
+
+4. **Run with live reload (Air):**
+```bash
+air
 ```
 
 ## 📁 Project Structure
 
 ```
 📦 Golang-microservice
-├── 🚀 main.go          # Application entry point
-├── 📄 go.mod           # Go module file
-├── 🔒 go.sum           # Go dependencies checksum
-└── 📖 README.md        # Project documentation
+├── 📁 AUTH-NODE/        # Node.js authentication service
+├── 📁 CRUD-GO/          # Go CRUD microservice
+│   ├── 📁 config/       # Database configuration
+│   │   └── db.go
+│   ├── 📁 controllers/  # HTTP request handlers
+│   │   └── userController.go
+│   ├── 📁 models/       # Data models
+│   │   └── user.go
+│   ├── 📁 routes/       # API route definitions
+│   │   └── userRoutes.go
+│   ├── 📁 microservice-golang/
+│   │   └── 🚀 main.go   # Application entry point
+│   ├── 📄 go.mod        # Go module file
+│   ├── 🔒 go.sum        # Go dependencies checksum
+│   ├── ⚡ air.toml      # Live reload configuration
+│   └── 🙈 .gitignore    # Git ignore rules
+└── 📖 README.md         # Project documentation
 ```
 
 ## 🌐 API Endpoints
@@ -50,6 +68,11 @@ go run main.go
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/health` | ❤️ Health check endpoint |
+| `GET` | `/api/v1/users` | 👥 Get all users |
+| `POST` | `/api/v1/users` | ➕ Create new user |
+| `GET` | `/api/v1/users/:id` | 👤 Get user by ID |
+| `PUT` | `/api/v1/users/:id` | ✏️ Update user |
+| `DELETE` | `/api/v1/users/:id` | 🗑️ Delete user |
 
 ## 🔧 Development
 
@@ -60,7 +83,12 @@ go test ./...
 
 ### 🏗️ Building
 ```bash
-go build -o bin/app main.go
+go build -o bin/app microservice-golang/main.go
+```
+
+### 🔥 Live Reload Development
+```bash
+air  # Automatically restarts on file changes
 ```
 
 ## 🤝 Contributing
