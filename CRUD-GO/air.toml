@@ -1,9 +1,9 @@
-root = "."
+root = "./microservice-golang"
 tmp_dir = "tmp"
 
 [build]
-  bin = "./tmp/main.exe"
-  cmd = "go build -o ./tmp/main.exe ./microservice-golang/main.go"
+  bin = "../tmp/main.exe"
+  cmd = "go build -o ../tmp/main.exe main.go"
   exclude_dir = ["tmp", "vendor"]
   include_ext = ["go", "tpl", "tmpl", "html"]
   exclude_file = []
