@@ -21,14 +21,14 @@ services:
   go-crud:
     build:
       context: ./CRUD-GO
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     container_name: go_crud_service
     restart: unless-stopped
     ports:
       - "8080:8080"
-    environment:
-      - PORT=8080
-      - MONGODB_URI=mongodb://admin:password@mongodb:27017/microservice?authSource=admin
+    env_file:
+      - .env
+      - .env.local
     depends_on:
       - mongodb
     volumes:
@@ -36,20 +36,29 @@ services:
     networks:
       - microservice_network
 
+  #Nginx Reverse Proxy
+  nginx:
+    build: ./nginx
+    image: nginx
+    container_name: "nginx_cont"
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - go-crud
+      - node-auth
   # Node.js Auth Service
   node-auth:
     build:
       context: ./AUTH-NODE
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     container_name: node_auth_service
     restart: unless-stopped
     ports:
       - "3000:3000"
-    environment:
-      - PORT=3000
-      - DATABASE_URL=mongodb://admin:password@mongodb:27017/authdb?authSource=admin
-      - AUTH_SECRET=your-secret-key-here
-      - AUTH_TRUST_HOST=true
+    env_file:
+      - .env
+      - .env.local
     depends_on:
       - mongodb
     volumes:
