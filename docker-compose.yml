@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: microservice_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: microservice
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - microservice_network
+
+  # Go CRUD Service
+  go-crud:
+    build:
+      context: ./CRUD-GO
+      dockerfile: Dockerfile.dev
+    container_name: go_crud_service
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/microservice?authSource=admin
+    depends_on:
+      - mongodb
+    volumes:
+      - ./CRUD-GO:/app
+    networks:
+      - microservice_network
+
+  # Node.js Auth Service
+  node-auth:
+    build:
+      context: ./AUTH-NODE
+      dockerfile: Dockerfile.dev
+    container_name: node_auth_service
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=mongodb://admin:password@mongodb:27017/authdb?authSource=admin
+      - AUTH_SECRET=your-secret-key-here
+      - AUTH_TRUST_HOST=true
+    depends_on:
+      - mongodb
+    volumes:
+      - ./AUTH-NODE:/app
+      - /app/node_modules
+    networks:
+      - microservice_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  microservice_network:
+    driver: bridge
